@@ -1,9 +1,6 @@
 - project:
     templates:
       - build-tox-docs
-    unlabel-on-push:
-      jobs:
-        - noop
     post:
       jobs:
         - tox-docs
