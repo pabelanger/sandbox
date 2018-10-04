@@ -4,6 +4,9 @@
     post:
       jobs:
         - tox-docs
+        - tox-py27
+        - tox-py35
+        - tox-py36
     release:
       jobs:
         - tox-docs
