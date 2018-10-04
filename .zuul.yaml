@@ -1,9 +1,16 @@
 - project:
     templates:
       - build-tox-docs
-    post:
+    check:
       jobs:
         - tox-docs
+        - tox-py27:
+            nodeset: fedora-latest-4vcpu
+        - tox-py35:
+            nodeset: fedora-latest-4vcpu
+        - tox-py36:
+            nodeset: fedora-latest-4vcpu
+
     release:
       jobs:
         - tox-docs
