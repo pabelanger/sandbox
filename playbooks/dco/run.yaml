@@ -11,10 +11,18 @@
         chdir: "{{ zuul.project.src_dir }}"
 
     - name: shell
-      shell: |
-        for commit in $(git cherry master | cut -d " " -f2)
-        do
-            echo $commit
-        done
-      args:
+      shell:
+        cmd: |
+          set -e
+          set -x
+          result=0
+          for commit in $(git cherry -v origin/{{ zuul.branch }} HEAD | cut -d " " -f2)
+          do
+            if ! git show -s $commit | grep -q "Signed-off-by:"; then
+              echo "Commt $commit does not have a Signed-off-by header"
+              git show $commit
+              result=1
+            fi
+          done
         chdir: "{{ zuul.project.src_dir }}"
+        executable: /bin/bash
