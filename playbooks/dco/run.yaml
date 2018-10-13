@@ -11,10 +11,8 @@
         chdir: "{{ zuul.project.src_dir }}"
 
     - name: shell
-      shell: |
-        for commit in $(git cherry master | cut -d " " -f2)
-        do
-            echo $commit
-        done
-      args:
+      shell:
+        cmd: |
+          git cherry -v origin/{{ zuul.branch }} HEAD
         chdir: "{{ zuul.project.src_dir }}"
+        executable: /bin/bash
