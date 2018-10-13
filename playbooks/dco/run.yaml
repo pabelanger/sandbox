@@ -1,0 +1,8 @@
+- hosts: all
+  tasks:
+    - name: shell
+      shell: |
+        for commit in $(git cherry master | cut -d " " -f2)
+        do
+            echo $commit
+        done
