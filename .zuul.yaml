@@ -1,6 +1,18 @@
+- job:
+    name: tox-molecule-demo
+    parent: tox
+    required-projects:
+      - name: github.com/ansible/molecule
+    vars:
+      tox_envlist: lint
+      zuul_work_dir: /home/zuul/src/github.com/ansible/molecule
+
 - project:
     templates:
       - build-tox-docs
+    check:
+      jobs:
+        - tox-molecule-demo
     post:
       jobs:
         - tox-docs
