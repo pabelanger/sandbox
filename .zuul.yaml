@@ -1,6 +1,29 @@
+- job:
+    name: molecule-demo-base
+    parent: tox
+    required-projects:
+      - name: github.com/ansible/molecule
+    nodeset: fedora-latest-1vcpu
+    vars:
+      zuul_work_dir: /home/zuul/src/github.com/ansible/molecule
+
+- job:
+    name: moleculd-demo-lint
+    parent: molecule-demo-base
+    vars:
+      tox_envlist: lint
+
+- job:
+    name: moleculd-demo-py27-ansible25-unit
+    parent: molecule-demo-base
+    vars:
+      tox_envlist: py27-ansible25-unit
+
 - project:
-    templates:
-      - build-tox-docs
+    check:
+      jobs:
+        - molecule-demo-lint
+        - molecule-demo-py27-ansible25-unit
     post:
       jobs:
         - tox-docs
