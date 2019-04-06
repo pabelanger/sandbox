@@ -1,0 +1,19 @@
+- job:
+    name: molecule-tox-base
+    parent: tox
+    required-projects:
+      - name: github.com/ansible/molecule
+    vars:
+      zuul_work_dir: ~/src/github.com/ansible/molecule
+
+- job:
+    name: molecule-tox-linters
+    parent: molecule-tox-base
+    vars:
+      tox_envlist: lint
+    nodeset: fedora-latest-1vcpu
+
+- project:
+    check:
+      jobs:
+        - molecule-tox-linters
