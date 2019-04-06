@@ -1,0 +1,28 @@
+- job:
+    name: molecule-tox-base
+    parent: tox
+    pre-run: playbooks/molecule-tox-base/pre.yaml
+    required-projects:
+      - name: github.com/ansible/molecule
+    vars:
+      zuul_work_dir: ~/src/github.com/ansible/molecule
+
+- job:
+    name: molecule-tox-linters
+    parent: molecule-tox-base
+    vars:
+      tox_envlist: lint
+    nodeset: fedora-latest-1vcpu
+
+- job:
+    name: molecule-tox-py36-ansible27-unit
+    parent: molecule-tox-base
+    vars:
+      tox_envlist: py36-ansible27-unit
+    nodeset: fedora-latest-1vcpu
+
+- project:
+    check:
+      jobs:
+        - molecule-tox-linters
+        - molecule-tox-py36-ansible27-unit
