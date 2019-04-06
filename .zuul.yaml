@@ -1,0 +1,68 @@
+- job:
+    name: molecule-tox-base
+    parent: tox
+    pre-run: playbooks/molecule-tox-base/pre.yaml
+    required-projects:
+      - name: github.com/ansible/molecule
+    vars:
+      test_setup_reset_connection: true
+      zuul_work_dir: ~/src/github.com/ansible/molecule
+
+- job:
+    name: molecule-tox-linters
+    parent: molecule-tox-base
+    vars:
+      tox_envlist: lint
+    nodeset: fedora-latest-1vcpu
+
+- job:
+    name: molecule-tox-py3
+    parent: molecule-tox-base
+    nodeset: fedora-latest-1vcpu
+
+- job:
+    name: molecule-tox-py36-ansible25-unit
+    parent: molecule-tox-py3
+    vars:
+      tox_envlist: py36-ansible25-unit
+
+- job:
+    name: molecule-tox-py36-ansible26-unit
+    parent: molecule-tox-py3
+    vars:
+      tox_envlist: py36-ansible26-unit
+
+- job:
+    name: molecule-tox-py36-ansible27-unit
+    parent: molecule-tox-py3
+    vars:
+      tox_envlist: py36-ansible27-unit
+
+- job:
+    name: molecule-tox-py37-ansible25-unit
+    parent: molecule-tox-py3
+    vars:
+      tox_envlist: py37-ansible25-unit
+
+- job:
+    name: molecule-tox-py37-ansible26-unit
+    parent: molecule-tox-py3
+    vars:
+      tox_envlist: py37-ansible26-unit
+
+- job:
+    name: molecule-tox-py37-ansible27-unit
+    parent: molecule-tox-py3
+    vars:
+      tox_envlist: py37-ansible27-unit
+
+- project:
+    check:
+      jobs:
+        - molecule-tox-linters
+        - molecule-tox-py36-ansible25-unit
+        - molecule-tox-py36-ansible26-unit
+        - molecule-tox-py36-ansible27-unit
+        - molecule-tox-py37-ansible25-unit
+        - molecule-tox-py37-ansible26-unit
+        - molecule-tox-py37-ansible27-unit
