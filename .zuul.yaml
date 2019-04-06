@@ -1,0 +1,8 @@
+- job:
+    name: runner-tox-py27
+    parent: tox-py27
+    required-projects:
+      - name: github.com/ansible/ansible-runner
+    nodeset: centos-7-1vcpu
+    vars:
+      zuul_work_dir: ~/src/github.com/ansible/ansible-runner
