@@ -1,0 +1,21 @@
+- job:
+    name: awx-tox-base
+    parent: tox
+    pre-run: playbooks/awx-tox-base/pre.yaml
+    required-projects:
+      - name: github.com/ansible/awx
+    vars:
+      test_setup_reset_connection: true
+      zuul_work_dir: ~/src/github.com/ansible/awx
+
+- job:
+    name: awx-tox-linters
+    parent: awx-tox-base
+    vars:
+      tox_envlist: api-lint
+    nodeset: fedora-latest-1vcpu
+
+- project:
+    check:
+      jobs:
+        - awx-tox-linters
