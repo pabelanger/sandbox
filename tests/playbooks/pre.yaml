@@ -1,0 +1,4 @@
+- hosts: all
+  tasks:
+    - name: Enable EPEL
+      shell: sudo yum-config-manager --enable epel
