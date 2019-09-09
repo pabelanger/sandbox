@@ -1,0 +1,12 @@
+- job:
+    name: sandbox-metal3-dev-env
+    parent: unitests
+    run: tests/playbooks/run.yaml
+    required-projects:
+      - github.com/metal3/metal3-dev-env
+    nodeset: centos-7-1vcpu
+
+- project:
+    check:
+      jobs:
+        - sandbox-metal3-dev
