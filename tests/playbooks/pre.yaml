@@ -1,0 +1,9 @@
+- hosts: all
+  tasks:
+    - name: Enable EPEL
+      become: true
+      shell: yum-config-manager --enable epel
+
+    - name: Enable nested virt for kvm
+      become: true
+      shell: "echo 'options kvm-intel nested=y' >> /etc/modprobe.d/dist.conf"
