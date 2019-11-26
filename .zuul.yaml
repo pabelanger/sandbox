@@ -1,4 +1,21 @@
+- job:
+    name: test-sandbox
+    run: playbooks/run.yaml
+    nodeset: centos-8-1vcpu
+    vars:
+      download_artifact_api: "https://dashboard.zuul.ansible.com/api/tenant/{{ zuul.tenant }}"
+      download_artifact_job: build-ansible-collection
+      download_artifact_pipeline: "{{ zuul.pipeline }}"
+      download_artifact_type:
+        - ansible_collection
+
 - project:
+    check:
+      jobs:
+        - build-ansible-collection
+        - test-sandbox:
+            dependencies:
+              - build-ansible-collection
     post:
       jobs:
         - release-ansible-collection-galaxy-dev
