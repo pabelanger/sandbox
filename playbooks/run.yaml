@@ -1,0 +1,7 @@
+- hosts: all
+  tasks:
+    - name: download artifact
+      include_role:
+        name: download-artifact
+      vars:
+        download_artifact_pipeline: "{{ zuul.pipeline }}"

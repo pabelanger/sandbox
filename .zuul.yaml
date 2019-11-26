@@ -1,4 +1,14 @@
+- job:
+    name: test-sandbox
+    run: playbooks/run.yaml
+
 - project:
+    check:
+      jobs:
+        - build-ansible-collection
+        - test-sandbox:
+            dependencies:
+              - build-ansible-collection
     post:
       jobs:
         - release-ansible-collection-galaxy-dev
