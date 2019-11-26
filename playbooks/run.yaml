@@ -1,0 +1,8 @@
+- hosts: all
+  tasks:
+    - name: download artifact
+      include_role:
+        name: download-artifact
+      vars:
+        download_artifact_api: "https://dashboard.zuul.ansible.com/api/tenant/{{ zuul.tenant }}"
+        download_artifact_pipeline: "{{ zuul.pipeline }}"
