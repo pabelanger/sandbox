@@ -1,0 +1,57 @@
+- hosts: all
+  tasks:
+    - name: Executor install-docker role
+      include_role:
+        name: install-docker
+      vars:
+        use_upstream_docker: false
+
+    - name: Ensure dependencies are installed
+      become: true
+      package:
+        name:
+          - docker-compose
+          - python-pexpect
+        state: installed
+
+    - name: Build docker containers
+      shell: make dev/build
+      args:
+        chdir: "{{ zuul.projects['github.com/ansible/galaxy'].src_dir }}"
+        executable: /bin/bash
+
+    - name: Run docker-compose up
+      shell: make dev/up_detached
+      args:
+        chdir: "{{ zuul.projects['github.com/ansible/galaxy'].src_dir }}"
+        executable: /bin/bash
+
+    - name: Print list of images
+      command: docker image ls --all --digests --no-trunc
+
+    - name: Wait for galaxy to start
+      uri:
+        url: http://localhost:8000
+        method: GET
+      register: result
+      until: result.status == 200 and result.redirected == false
+      retries: 120
+
+    - name: Create admin user
+      expect:
+        chdir: "{{ zuul.projects['github.com/ansible/galaxy'].src_dir }}"
+        command: make dev/createsuperuser
+        echo: true
+        responses:
+          'Username:': admin
+          'Email address:': admin@example.org
+          'Password:': secret
+          'Password \(again\):': secret
+        timeout: 60
+
+    - name: Create admin token
+      args:
+        chdir: "{{ zuul.projects['github.com/ansible/galaxy'].src_dir }}"
+        executable: /bin/bash
+      shell: make USERNAME=admin dev/createusertoken | tail -n1 | cut -d ' ' -f3
+      register: _token
