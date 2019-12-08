@@ -1,0 +1,5 @@
+- hosts: all
+  tasks:
+    - name: Executor install-docker role
+      include_role:
+        name: install-docker
