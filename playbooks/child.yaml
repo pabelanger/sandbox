@@ -1,0 +1,25 @@
+- hosts: all
+  tasks:
+    - name: Create ansible.cfg configuration file
+      copy:
+        content: |
+          [galaxy]
+          server_list = buildset_galaxy
+
+          [galaxy_server.buildset_galaxy]
+          url = http://{{ registry_ip_address }}:8000
+        dest: /tmp/galaxy.cfg
+        mode: 0600
+
+    - name: Setup tox role
+      include_role:
+        name: tox
+      vars:
+        tox_extra_args: -vv --notest
+        tox_install_siblings: false
+        zuul_work_dir: "{{ zuul.projects['github.com/ansible-network/releases'].src_dir }}"
+
+    - name: Install collection from buildset Galaxy
+      environment:
+        ANSIBLE_CONFIG: /tmp/galaxy.cfg
+      shell: "{{ ansible_user_dir }}/{{ zuul.projects['github.com/ansible-network/releases'].src_dir }}/.tox/venv/bin/ansible-galaxy collection install network.sandbox:0.0.26-dev1"
