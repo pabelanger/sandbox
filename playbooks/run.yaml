@@ -1,0 +1,23 @@
+- hosts: all
+  tasks:
+    - name: Executor install-docker role
+      include_role:
+        name: install-docker
+      vars:
+        use_upstream_docker: false
+
+    - name: Ensure docker-compose is installed
+      become: true
+      package:
+        name: docker-compose
+        state: installed
+
+    - name: Build docker containers
+      shell: make build/galaxy-dev
+      args:
+        chdir: "{{ zuul.projects['github.com/ansible/galaxy'].src_dir }}"
+
+    - name: Run docker-compose up
+      shell: make dev/up_detached
+      args:
+        chdir: "{{ zuul.projects['github.com/ansible/galaxy'].src_dir }}"
