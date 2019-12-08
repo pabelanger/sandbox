@@ -1,10 +1,9 @@
+- job:
+    name: galaxy-quick-start
+    run: playbooks/run.yaml
+    nodeset: ubuntu-bionic-1vcpu
+
 - project:
-    post:
+    check:
       jobs:
-        - release-ansible-collection-galaxy-dev
-    pre-rlease:
-      jobs:
-        - release-ansible-collection-galaxy-dev
-    release:
-      jobs:
-        - release-ansible-collection-galaxy-dev
+        - galaxy-quick-start
