@@ -1,10 +1,26 @@
+- nodeset:
+    name: ubuntu-bionic-1vcpu
+    nodes:
+      - name: ubuntu-bionic
+        label: ubuntu-bionic-1vcpu
+
+- job:
+    name: galaxy-quick-start
+    run: playbooks/run.yaml
+    required-projects:
+      - name: github.com/ansible/galaxy
+      - name: github.com/ansible-network/releases
+    nodeset: ubuntu-bionic-1vcpu
+
+- job:
+    name: galaxy-quick-start-child
+    dependencies:
+      - name: galaxy-quick-start
+    run: playbooks/child.yaml
+    nodeset: ubuntu-bionic-1vcpu
+
 - project:
-    post:
+    check:
       jobs:
-        - release-ansible-collection-galaxy-dev
-    pre-rlease:
-      jobs:
-        - release-ansible-collection-galaxy-dev
-    release:
-      jobs:
-        - release-ansible-collection-galaxy-dev
+        - galaxy-quick-start
+        - galaxy-quick-start-child
