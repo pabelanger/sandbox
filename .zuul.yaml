@@ -1,7 +1,0 @@
-- project:
-    pre-rlease:
-      jobs:
-        - release-ansible-python
-    release:
-      jobs:
-        - release-ansible-python
