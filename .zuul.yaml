@@ -1,4 +1,12 @@
+- job:
+    name: builder-test
+    run: playbooks/run.yaml
+    nodeset: centos-8-1vcpu
+
 - project:
+    check:
+      jobs:
+        - builder-test
     pre-rlease:
       jobs:
         - release-ansible-python
