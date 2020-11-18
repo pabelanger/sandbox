@@ -1,4 +1,8 @@
 - project:
+    check:
+      jobs:
+        - ansible-buildset-registry
+        - ansible-galaxy-build-container-image
     pre-rlease:
       jobs:
         - release-ansible-python
